@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.example.curiculos.model.Curriculo;
@@ -30,9 +31,9 @@ public class CurriculoService {
         if (buscandoCurriculo.isPresent()) {
             Curriculo curriculo = buscandoCurriculo.get();
             curriculo.setNome(curriculoEntrada.getNome());
-            curriculo.setEmail(curriculoEntrada.getTelefone());
-			curriculo.setEmail(curriculoEntrada.getEducacao());
-			curriculo.setEmail(curriculoEntrada.getExperiencias());
+            curriculo.setTelefone(curriculoEntrada.getTelefone());
+			curriculo.setEducacao(curriculoEntrada.getEducacao());
+			curriculo.setExperiencias(curriculoEntrada.getExperiencias());
             repository.save(curriculo);
             return new ResponseEntity<>(true, HttpStatus.OK);
         }
@@ -60,7 +61,7 @@ public class CurriculoService {
     }
 
 	private CurriculoSaidaDto mapToDto(Curriculo curriculo) {
-        return new CurriculoSaidaDto(curriculo.getId(), curriculo.getNome(), curriculo.getTelefone(), curriculo.getEducacao(), curiculos.getExperiencias());
+        return new CurriculoSaidaDto(curriculo.getId(), curriculo.getNome(), curriculo.getTelefone(), curriculo.getEducacao(), curriculo.getExperiencias());
     }
 
 }
