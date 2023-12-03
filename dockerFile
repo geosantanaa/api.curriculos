@@ -1,5 +1,5 @@
 # Use the official OpenJDK image as a base image
-FROM openjdk:11-jre-slim
+FROM ubunto:latest AS build
 
 # Define the working directory inside the container
 WORKDIR /app
