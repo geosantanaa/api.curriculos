@@ -1,14 +1,13 @@
-# Use the official OpenJDK image as a base image
-FROM ubunto:latest AS build
-
-# Define the working directory inside the container
+# Etapa 1: Build da aplicação usando Maven
+FROM maven:3.8.4-openjdk-11-slim AS build
 WORKDIR /app
-
-# Copy the JAR file into the container at /app/curriculo.jar
-COPY target/curriculo-0.0.1-SNAPSHOT.jar /app/curriculo.jar
-
-# Expose the port that the application will run on
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
+ 
+# Etapa 2: Configuração do ambiente de execução
+FROM openjdk:11-jdk-slim
+WORKDIR /app
+COPY --from=build /app/target/curriculo-0.0.1-SNAPSHOT.jar /app/curriculo.jar
 EXPOSE 8080
-
-# Command to run your application
-CMD ["java", "-jar", "curriculo.jar"]
+ENTRYPOINT ["java", "-jar", "/app/curriculo.jar"]
