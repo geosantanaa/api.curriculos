@@ -40,7 +40,6 @@ public class CurriculoController {
 
      @GetMapping
     public ResponseEntity<List<Curriculo>> listarCurriculos() {
-        List<Curriculo> curriculos = curriculoService.listarCurriculos();
         return ResponseEntity.ok(curriculos);
     }
 }
