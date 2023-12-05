@@ -38,8 +38,9 @@ public class CurriculoController {
         return service.excluir(id);
     }
 
-    @GetMapping
-    public ResponseEntity<List<CurriculoSaidaDto>> listar() {
-        return service.listar();
+     @GetMapping
+    public ResponseEntity<List<Curriculo>> listarCurriculos() {
+        List<Curriculo> curriculos = curriculoService.listarCurriculos();
+        return ResponseEntity.ok(curriculos);
     }
 }
