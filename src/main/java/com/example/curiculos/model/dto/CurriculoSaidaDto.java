@@ -16,6 +16,4 @@ public class CurriculoSaidaDto {
 	private String educacao;
 	private String experiencias;
 
-	public CurriculoSaidaDto(Long id, String nome, String telefone, String educacao, String experiencias) {
-    }
 }

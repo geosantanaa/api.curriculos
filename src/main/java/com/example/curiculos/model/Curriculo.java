@@ -22,7 +22,4 @@ public class Curriculo {
 	private String telefone;
 	private String educacao;
 	private String experiencias;
-
-	 public Curriculo(String nome, String telefone, String educacao, String experiencias) {
-    }
 }

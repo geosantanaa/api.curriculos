@@ -2,13 +2,15 @@ package com.example.curiculos.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.curiculos.model.Curriculo;
+import com.example.curiculos.model.dto.CurriculoEntradaDto;
+import com.example.curiculos.model.dto.CurriculoSaidaDto;
 import com.example.curiculos.repository.CurriculoRepository;
 
 @Service
@@ -17,41 +19,51 @@ public class CurriculoService {
     @Autowired
     private CurriculoRepository repository;
 
-    public ResponseEntity<Curriculo> criar(Curriculo curriculo) {
+    @Autowired
+    public ModelMapper mapper;
+
+    public CurriculoSaidaDto criar(CurriculoEntradaDto curriculoEntrada) {
+
+        Curriculo curriculo = mapper.map(curriculoEntrada, Curriculo.class);
         repository.save(curriculo);
-        return new ResponseEntity<>(curriculo, HttpStatus.CREATED);
+
+        CurriculoSaidaDto saida = mapper.map(curriculo, CurriculoSaidaDto.class);
+        return saida;
     }
 
-    public ResponseEntity<Boolean> alterar(Long id, Curriculo curriculo) {
-        Optional<Curriculo> buscandoCurriculo = repository.findById(id);
-        if (buscandoCurriculo.isPresent()) {
-            Curriculo curriculoExistente = buscandoCurriculo.get();
-            curriculoExistente.setNome(curriculo.getNome());
-            curriculoExistente.setTelefone(curriculo.getTelefone());
-            curriculoExistente.setEducacao(curriculo.getEducacao());
-            curriculoExistente.setExperiencias(curriculo.getExperiencias());
-            repository.save(curriculoExistente);
-            return new ResponseEntity<>(true, HttpStatus.OK);
+    public boolean alterar(Long id, CurriculoEntradaDto curriculoEntrada) {
+
+        Optional <Curriculo> buscandoCurriculo = repository.findById(id);
+
+        if(buscandoCurriculo.isPresent()){
+            Curriculo curriculo = buscandoCurriculo.get();
+            mapper.map(curriculoEntrada, Curriculo.class);
+            repository.save(curriculo);
+            return true;
         }
-        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+        return false;
     }
 
-    public ResponseEntity<Curriculo> pegarUm(Long id) {
+    public CurriculoSaidaDto pegarUm(Long id) {
         Optional<Curriculo> buscandoCurriculo = repository.findById(id);
-        return buscandoCurriculo.map(curriculo -> new ResponseEntity<>(curriculo, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        if(buscandoCurriculo.isPresent()){
+            Curriculo curriculo = buscandoCurriculo.get();
+            CurriculoSaidaDto saida = mapper.map(curriculo, CurriculoSaidaDto.class);
+            return saida;
+        }
+        return null;
     }
 
-    public ResponseEntity<Boolean> excluir(Long id) {
+    public boolean excluir(Long id) {
         if (repository.existsById(id)) {
             repository.deleteById(id);
-            return new ResponseEntity<>(true, HttpStatus.OK);
+            return true;
         }
-        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+        return false;
     }
 
-    public ResponseEntity<List<Curriculo>> listar() {
+    public List<CurriculoSaidaDto> listar() {
         List<Curriculo> listaCurriculos = repository.findAll();
-        return new ResponseEntity<>(listaCurriculos, HttpStatus.OK);
+        return listaCurriculos.stream().map(curriculo -> mapper.map(curriculo, CurriculoSaidaDto.class)).collect(Collectors.toList());
     }
 }
